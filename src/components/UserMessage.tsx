@@ -1,5 +1,5 @@
 interface Props {
-  sender: "user" | "bot";
+  sender: "user" | "assistant";
   text: string;
 }
 

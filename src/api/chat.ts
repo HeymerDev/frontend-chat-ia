@@ -1,28 +1,33 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { api } from "../config/axios";
 
 export interface ChatRequest {
   mensaje: string;
-  usuario_id: number;
-  tipo_usuario: string;
-  incluir_contexto: boolean;
+  usuario_id?: number; // opcional, por defecto 1
+  conversation_id?: number | null; // opcional, puede ir vacío
+  tipo_usuario: string; // aunque FastAPI no lo usa, puedes enviar extra
+  incluir_contexto: boolean; // aunque FastAPI no lo usa, puedes enviar extra
 }
 
 export interface ChatResponse {
-  respuesta: string;
-  intencion: string;
-  contexto_usado: unknown;
+  conversation_id: number;
+  question: string;
+  response: {
+    prompt?: string;
+    response: string;
+  };
+  nlp: {
+    keywords: Array<[string, number]>;
+    entities: unknown[];
+  };
 }
 
 export const chatService = {
   enviarMensaje: async (payload: ChatRequest): Promise<ChatResponse> => {
-    const { data } = await api.post<ChatResponse>("/chat/", payload);
+    const { data } = await api.post<ChatResponse>("/chat", {
+      message: payload.mensaje,
+      user_id: payload.usuario_id ?? 1,
+      conversation_id: payload.conversation_id ?? null,
+    });
     return data;
   },
 };

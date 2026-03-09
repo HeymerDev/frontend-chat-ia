@@ -5,7 +5,10 @@ export const App = () => {
   return (
     <main className="min-h-screen bg-gray-100 grid">
       <Header />
-      <Chat />
+      {/* Puedes cambiar el ID del usuario según sea necesario */}
+      <div className="px-32 py-7">
+        <Chat />
+      </div>
     </main>
   );
 };
